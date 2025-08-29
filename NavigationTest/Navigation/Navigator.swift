@@ -8,7 +8,7 @@ struct Navigator {
     self.destinations = destinations()
   }
 
-  func content(for link: Link) -> AnyView? {
+  func content(for link: Link) -> some View {
     destinations.values
       .lazy
       .compactMap { try? $0.content(link) }
