@@ -1,56 +1,61 @@
 import SwiftUI
 
-public struct Destination {
-  private let content: (Link) throws -> AnyView?
+public struct Destination<Content: View> {
+
+  private let content: (Link) throws -> Content?
+
+  init(@ViewBuilder content: @escaping (Link) throws -> Content?) {
+    self.content = content
+  }
 }
 
 extension Destination {
 
-  public init<Value, Content: View>(
+  public init<Value>(
     route: Route<Value>,
     @ViewBuilder content: @escaping (Value) -> Content
   ) {
     self.init { link in
-      guard let value = try route.value(for: link) else { return nil }
-      return AnyView(content(value))
+      if let value = try route.value(for: link) {
+        content(value)
+      }
     }
   }
 
-  public func content(for link: Link) throws -> AnyView? {
+  public func content(for link: Link) throws -> Content? {
     try content(link)
   }
 }
 
 extension Destination {
 
-  public init(@Destination.Builder build: () -> Destination) {
+  public init(@DestinationBuilder build: () -> Destination) {
     self = build()
   }
+}
 
-  @resultBuilder
-  public enum Builder {
+@resultBuilder
+public enum DestinationBuilder {
 
-    public static func buildBlock() -> Destination {
-      Destination { _ in nil }
-    }
+  public static func buildBlock() -> Destination<Never> {
+    Destination { _ in Optional<Never>.none }
+  }
 
-    public static func buildExpression(_ expression: Destination) -> Destination {
-      expression
-    }
+  public static func buildPartialBlock<C>(
+    first: Destination<C>
+  ) -> Destination<C> {
+    first
+  }
 
-    public static func buildPartialBlock(first: Destination) -> Destination {
-      first
-    }
-
-    public static func buildPartialBlock(
-      accumulated: Destination,
-      next: Destination
-    ) -> Destination {
-      Destination { link in
-        switch try accumulated.content(for: link) {
-        case .some(let view): view
-        case .none: try next.content(for: link)
-        }
+  public static func buildPartialBlock<C1, C2>(
+    accumulated: Destination<C1>,
+    next: Destination<C2>
+  ) -> Destination<_ConditionalContent<C2,C1?>> {
+    Destination<_ConditionalContent<C2,C1?>> { link in
+      if let content = try next.content(for: link) {
+        content
+      } else {
+        try accumulated.content(for: link)
       }
     }
   }

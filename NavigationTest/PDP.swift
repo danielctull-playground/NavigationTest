@@ -11,7 +11,7 @@ extension ProductID: ExpressibleByIntegerLiteral {
   }
 }
 
-private struct PDP: View {
+struct PDP: View {
 
   let id: ProductID
 
@@ -44,12 +44,20 @@ extension Route<ProductID> {
   }
 }
 
-extension Feature {
+enum ProductDetail: Feature {
 
-  public static var productDetail: Feature {
-    Feature {
-      Destination(route: .productDetail, content: PDP.init)
-      Destination(route: .productDetail2, content: PDP.init)
-    }
+  static let destination = Destination {
+    Destination(route: .productDetail, content: PDP.init)
+    Destination(route: .productDetail2, content: PDP.init)
   }
 }
+//
+//extension Feature {
+//
+//  public static var productDetail: Feature {
+//    Feature {
+//      Destination(route: .productDetail, content: PDP.init)
+//      Destination(route: .productDetail2, content: PDP.init)
+//    }
+//  }
+//}

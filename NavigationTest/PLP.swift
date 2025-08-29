@@ -1,7 +1,7 @@
 import RegexBuilder
 import SwiftUI
 
-private struct ProductListID {
+struct ProductListID {
   let value: Int
 }
 
@@ -17,7 +17,7 @@ extension Link {
   }
 }
 
-private struct PLP: View {
+struct PLP: View {
 
   let id: ProductListID
 
@@ -63,11 +63,9 @@ extension Route<ProductListID> {
   }
 }
 
-extension Feature {
+enum ProductList: Feature {
 
-  public static var productList: Feature {
-    Feature {
-      Destination(route: .productList, content: PLP.init)
-    }
+  static let destination = Destination {
+    Destination(route: .productList, content: PLP.init)
   }
 }

@@ -1,13 +1,19 @@
+import SwiftUI
 
-public struct Feature {
-
-  public let destination: Destination
-
-  public init(destination: Destination) {
-    self.destination = destination
-  }
-
-  public init(@Destination.Builder destination: () -> Destination) {
-    self.destination = destination()
-  }
+protocol Feature {
+  associatedtype Content: View
+  static var destination: Destination<Content> { get }
 }
+
+//public struct Feature<Content: View> {
+//
+//  public let destination: Destination<Content>
+//
+//  public init(destination: Destination<Content>) {
+//    self.destination = destination
+//  }
+//
+//  public init(@DestinationBuilder destination: () -> Destination<Content>) {
+//    self.destination = destination()
+//  }
+//}

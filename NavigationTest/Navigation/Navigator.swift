@@ -2,10 +2,12 @@ import SwiftUI
 
 struct Navigator {
 
-  private let destination: Destination
+  private let destination: Destination<AnyView>
 
-  init(@Destination.Builder destination: () -> Destination) {
-    self.destination = destination()
+  init<Content>(@DestinationBuilder destination: @escaping () -> Destination<Content>) {
+    self.destination = Destination { link in
+      try AnyView(destination().content(for: link))
+    }
   }
 
   func content(for link: Link) -> AnyView? {
