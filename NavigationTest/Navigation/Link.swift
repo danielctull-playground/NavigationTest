@@ -10,7 +10,27 @@ public struct Link: Hashable, Sendable, Identifiable {
 
 extension Link {
 
-  public static func navigation(domain: String, value: String) -> Link {
-    Link("nav://\(domain)/\(value)")
+  public static func navigation<Value: CustomStringConvertible>(
+    domain: Domain,
+    value: Value
+  ) -> Link {
+    Link("nav://\(domain.value)/\(value)")
+  }
+}
+
+// MARK: - Link.Domain
+
+extension Link {
+
+  public struct Domain {
+    let value: String
+  }
+}
+
+extension Link.Domain: ExpressibleByStringLiteral {
+  public init(stringLiteral value: StaticString) {
+    self.init(value: value.withUTF8Buffer {
+      String(decoding: $0, as: UTF8.self)
+    })
   }
 }

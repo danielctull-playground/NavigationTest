@@ -27,3 +27,21 @@ extension Route {
     try value(link)
   }
 }
+
+extension Route {
+
+  public init(
+    domain: Link.Domain,
+    value: CharacterClass,
+    transform: @escaping (String) -> Value?
+  ) {
+    self.init {
+      "nav://\(domain.value)/"
+      Capture {
+        OneOrMore(value)
+      }
+    } transform: { output in
+      transform(String(output.1))
+    }
+  }
+}

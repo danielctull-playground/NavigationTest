@@ -37,13 +37,8 @@ extension Route<ProductID> {
 
 extension Route<ProductID> {
   fileprivate static var productDetail2: Route {
-    Route {
-      "nav://product2/"
-      Capture {
-        OneOrMore(.digit)
-      }
-    } transform: { output in
-      guard let value = Int(output.1) else { return nil }
+    Route(domain: "product2", value: .digit) { string in
+      guard let value = Int(string) else { return nil }
       return ProductID(value: value)
     }
   }

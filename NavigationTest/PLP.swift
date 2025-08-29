@@ -7,13 +7,13 @@ private struct ProductListID {
 
 extension Link {
   public static func productDetail(_ id: Int) -> Link {
-    .navigation(domain: "product", value: "\(id)")
+    .navigation(domain: "product", value: id)
   }
 }
 
 extension Link {
   public static func productDetail2(_ id: Int) -> Link {
-    .navigation(domain: "product2", value: "\(id)")
+    .navigation(domain: "product2", value: id)
   }
 }
 
