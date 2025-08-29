@@ -1,59 +1,57 @@
 import SwiftUI
 
 public struct Destination {
+  private let content: (Link) throws -> AnyView?
+}
 
-  let content: (Link) throws -> AnyView?
+extension Destination {
 
   public init<Value, Content: View>(
     route: Route<Value>,
     @ViewBuilder content: @escaping (Value) -> Content
   ) {
-    self.content = { link in
+    self.init { link in
       guard let value = try route.value(for: link) else { return nil }
       return AnyView(content(value))
     }
   }
+
+  public func content(for link: Link) throws -> AnyView? {
+    try content(link)
+  }
 }
 
-// MARK: - Destinations
+extension Destination {
 
-public struct Destinations {
-  let values: [Destination]
-
-  fileprivate init(values: [Destination]) {
-    self.values = values
-  }
-
-  public init(@Destinations.Builder build: () -> Destinations) {
+  public init(@Destination.Builder build: () -> Destination) {
     self = build()
   }
-}
 
-extension Destinations {
   @resultBuilder
   public enum Builder {
 
-    public static func buildBlock() -> Destinations {
-      Destinations(values: [])
+    public static func buildBlock() -> Destination {
+      Destination { _ in nil }
     }
 
-    public static func buildExpression(_ expression: Destination) -> Destinations {
-      Destinations(values: [expression])
-    }
-
-    public static func buildExpression(_ expression: Destinations) -> Destinations {
+    public static func buildExpression(_ expression: Destination) -> Destination {
       expression
     }
 
-    public static func buildPartialBlock(first: Destinations) -> Destinations {
+    public static func buildPartialBlock(first: Destination) -> Destination {
       first
     }
 
     public static func buildPartialBlock(
-      accumulated: Destinations,
-      next: Destinations
-    ) -> Destinations {
-      Destinations(values: accumulated.values + next.values)
+      accumulated: Destination,
+      next: Destination
+    ) -> Destination {
+      Destination { link in
+        switch try accumulated.content(for: link) {
+        case .some(let view): view
+        case .none: try next.content(for: link)
+        }
+      }
     }
   }
 }

@@ -66,8 +66,8 @@ extension Route<ProductListID> {
 extension Feature {
 
   public static var productList: Feature {
-    Feature(destinations: Destinations {
+    Feature {
       Destination(route: .productList, content: PLP.init)
-    })
+    }
   }
 }

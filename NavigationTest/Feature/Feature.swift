@@ -1,9 +1,13 @@
 
 public struct Feature {
 
-  public let destinations: Destinations
+  public let destination: Destination
 
-  public init(destinations: Destinations) {
-    self.destinations = destinations
+  public init(destination: Destination) {
+    self.destination = destination
+  }
+
+  public init(@Destination.Builder destination: () -> Destination) {
+    self.destination = destination()
   }
 }

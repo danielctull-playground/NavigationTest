@@ -52,9 +52,9 @@ extension Route<ProductID> {
 extension Feature {
 
   public static var productDetail: Feature {
-    Feature(destinations: Destinations {
+    Feature {
       Destination(route: .productDetail, content: PDP.init)
       Destination(route: .productDetail2, content: PDP.init)
-    })
+    }
   }
 }

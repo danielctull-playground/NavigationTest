@@ -2,17 +2,14 @@ import SwiftUI
 
 struct Navigator {
 
-  private let destinations: Destinations
+  private let destination: Destination
 
-  init(@Destinations.Builder destinations: () -> Destinations) {
-    self.destinations = destinations()
+  init(@Destination.Builder destination: () -> Destination) {
+    self.destination = destination()
   }
 
-  func content(for link: Link) -> some View {
-    destinations.values
-      .lazy
-      .compactMap { try? $0.content(link) }
-      .first
+  func content(for link: Link) -> AnyView? {
+    try? destination.content(for: link)
   }
 }
 
